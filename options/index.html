@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Magento Developer Tools | Setup</title>
+        <link rel="stylesheet" href="../assets/normalize.css" />
+        <link rel="stylesheet" href="../assets/skeleton.css" />
+        <link rel="stylesheet" href="../assets/options.css" />
+    </head>
+    <body>
+        <header class="page-header">
+            <h2>Magento Developer Tools - Setup</h2>
+        </header>
+        <form action="./" onsubmit="return false;">
+            <fieldset>
+                <legend>Environments</legend>
+                <div class="optionset-header">
+                    <button type="button" data-trigger="Options.addEnvironment">Add</button>
+                    <button type="button" data-trigger="Options.removeSelectedEnvironments">Remove Selected</button>
+                    <button type="button" data-trigger="Options.saveChanges" class="u-pull-right">Save Changes</button>
+                </div>
+                <table id="environment_table" class="u-full-width">
+                    <col width="60px" />
+                    <col />
+                    <col width="220px" />
+                    <thead>
+                        <tr>
+                            <th class="text-center">
+                                <input type="checkbox" title="Toggle All" data-trigger="Options.toggleSelectedEnvironments" />
+                            </th>
+                            <th class="text-left">URL Expression</th>
+                            <th class="text-left">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-template="environment-row">
+                            <td class="text-center">
+                                <input type="checkbox" id="environment_%ID%_selected" data-toggle="environment-select" data-can-clone />
+                            </td>
+                            <td class="text-left">
+                                <input type="text" class="u-full-width" id="environment_%ID%_url" data-can-clone />
+                            </td>
+                            <td class="text-left">
+                                <select class="u-full-width" id="environment_%ID%_type" data-can-clone>
+                                    <option value="">Select One</option>
+                                    <option value="development">Development</option>
+                                    <option value="staging">Staging</option>
+                                    <option value="production">Production</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+        <script type="text/javascript" src="../lib/core.js"></script>
+        <script type="text/javascript" src="../lib/options.js"></script>
+    </body>
+</html>

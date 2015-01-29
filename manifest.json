@@ -1,0 +1,22 @@
+{
+
+    "manifest_version"  : 2,
+    "name"              : "Magento Environment Helper",
+    "author"            : "Rick Buczynski",
+    "description"       : "This extension provides environment cues to help you remember your current Magento session.",
+    "version"           : "1.0",
+    "options_page"      : "options/index.html",
+    "browser_action"    : {
+        "default_icon"  : "assets/icon-app.png",
+        "default_title" : "Magento Environment Helper"
+    },
+    "permissions"       : [
+        "activeTab",
+        "storage",
+        "notifications"
+    ],
+    "web_accessible_resources" : [
+        "assets/icon-notification.png"
+    ]
+
+}
