@@ -11,11 +11,17 @@ chrome.storage.sync.get('MageDevOptionEnvironments', function(data) {
 
 chrome.webNavigation.onDOMContentLoaded.addListener(
     function(tab) {
-        for (var id in MageDevEnvironments) {
-            var environment = MageDevEnvironments[id];
+        var settings = {
+            tab_icons   : MageDevEnvironments.tab_icons,
+            page_tags   : MageDevEnvironments.page_tags,
+            tag_layout  : MageDevEnvironments.tag_layout
+        };
+
+        for (var id in MageDevEnvironments.environments) {
+            var environment = MageDevEnvironments.environments[id];
 
             if (isEnvironment(tab, environment)) {
-                updateTab(tab, environment);
+                updateTab(tab, environment, settings);
             } else {
                 updateTab(tab, false);
             }
@@ -87,7 +93,16 @@ function isEnvironment(tab, environment) {
     return false;
 };
 
-function updateTab(tab, environment) {
+function resetAssetStates() {
+    MageDevAssetLoadStates  = {
+        callbacks   : [],
+        assets      : {}
+    };
+};
+
+function updateTab(tab, environment, settings) {
+    settings = settings || {};
+
     if (environment === false) {
         if (tab.id in MageDevTabStates) {
             chrome.tabs.executeScript(
@@ -119,13 +134,21 @@ function updateTab(tab, environment) {
                         'assets/icon-production.png',
                     ],
                     function(encodedAssets) {
+                        settings.assets = encodedAssets;
+
                         chrome.tabs.executeScript(
                             tab.id,
                             {
-                                code: 'MageDevEnvironment.initialize("' + environment.type + '", "' + chrome.extension.getURL('') + '", ' + JSON.stringify(encodedAssets) + ');'
+                                code: 'MageDevEnvironment.initialize("' + 
+                                    environment.type + '", "' + 
+                                    chrome.extension.getURL('') + '", ' + 
+                                    JSON.stringify(settings) + 
+                                ');'
                             },
                             function() {
                                 MageDevTabStates[tab.id] = environment;
+
+                                resetAssetStates();
                             }
                         );
                     }
