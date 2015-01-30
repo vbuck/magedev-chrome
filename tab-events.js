@@ -10,7 +10,7 @@ chrome.storage.sync.get('MageDevOptionEnvironments', function(data) {
 });
 
 chrome.webNavigation.onDOMContentLoaded.addListener(
-    function(tab) {
+    function(details) {
         var settings = {
             tab_icons   : MageDevEnvironments.tab_icons,
             page_tags   : MageDevEnvironments.page_tags,
@@ -20,10 +20,10 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
         for (var id in MageDevEnvironments.environments) {
             var environment = MageDevEnvironments.environments[id];
 
-            if (isEnvironment(tab, environment)) {
-                updateTab(tab, environment, settings);
+            if (isEnvironment(details, environment)) {
+                updateTab(details.tabId, environment, settings);
             } else {
-                updateTab(tab, false);
+                updateTab(details.tabId, false);
             }
         }
     }
@@ -85,8 +85,8 @@ function encodeAssetsCheckState(id, state) {
     }
 };
 
-function isEnvironment(tab, environment) {
-    if (tab.url.match(new RegExp(environment.url))) {
+function isEnvironment(details, environment) {
+    if (details.url.match(new RegExp(environment.url))) {
         return true;
     }
 
@@ -100,13 +100,13 @@ function resetAssetStates() {
     };
 };
 
-function updateTab(tab, environment, settings) {
+function updateTab(tabId, environment, settings) {
     settings = settings || {};
 
     if (environment === false) {
-        if (tab.id in MageDevTabStates) {
+        if (tabId in MageDevTabStates) {
             chrome.tabs.executeScript(
-                tab.id, 
+                tabId, 
                 {
                     code: 'if ("MageDevEnvironment" in window) MageDevEnvironment.destroy();'
                 },
@@ -115,14 +115,14 @@ function updateTab(tab, environment, settings) {
         }
     } else {
         chrome.tabs.insertCSS(
-            tab.id,
+            tabId,
             {
                 file: 'assets/inject.css'
             }
         );
 
         chrome.tabs.executeScript(
-            tab.id,
+            tabId,
             {
                 file: 'lib/inject.js'
             },
@@ -137,7 +137,7 @@ function updateTab(tab, environment, settings) {
                         settings.assets = encodedAssets;
 
                         chrome.tabs.executeScript(
-                            tab.id,
+                            tabId,
                             {
                                 code: 'MageDevEnvironment.initialize("' + 
                                     environment.type + '", "' + 
@@ -146,7 +146,7 @@ function updateTab(tab, environment, settings) {
                                 ');'
                             },
                             function() {
-                                MageDevTabStates[tab.id] = environment;
+                                MageDevTabStates[tabId] = environment;
 
                                 resetAssetStates();
                             }
