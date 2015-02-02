@@ -1,3 +1,7 @@
 tr[data-template="environment-row"] {
     display: none;
 }
+
+.header-icon {
+    vertical-align: middle;
+}
